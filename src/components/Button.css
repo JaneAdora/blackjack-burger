@@ -1,0 +1,48 @@
+.pixel-btn {
+  font-family: 'Press Start 2P', monospace;
+  border: 3px solid var(--pixel-dark);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: transform 0.1s, box-shadow 0.1s;
+  box-shadow: 4px 4px 0 var(--pixel-dark);
+}
+
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--pixel-dark);
+}
+
+.pixel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pixel-btn-small {
+  padding: 8px 12px;
+  font-size: 8px;
+}
+
+.pixel-btn-medium {
+  padding: 12px 20px;
+  font-size: 10px;
+}
+
+.pixel-btn-large {
+  padding: 16px 32px;
+  font-size: 12px;
+}
+
+.pixel-btn-primary {
+  background: var(--pixel-yellow);
+  color: var(--pixel-dark);
+}
+
+.pixel-btn-secondary {
+  background: var(--pixel-light);
+  color: var(--pixel-dark);
+}
+
+.pixel-btn-danger {
+  background: var(--pixel-red);
+  color: var(--pixel-light);
+}
