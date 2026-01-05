@@ -2,7 +2,6 @@ export { TitleScreen } from './TitleScreen';
 export { ModeSelectScreen } from './ModeSelectScreen';
 export { PlayerSetupScreen } from './PlayerSetupScreen';
 export { IngredientSelectScreen } from './IngredientSelectScreen';
-export { WagerScreen } from './WagerScreen';
 export { PlayingScreen } from './PlayingScreen';
 export { RoundResultScreen } from './RoundResultScreen';
 export { PassDeviceScreen } from './PassDeviceScreen';

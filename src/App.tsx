@@ -4,7 +4,6 @@ import {
   ModeSelectScreen,
   PlayerSetupScreen,
   IngredientSelectScreen,
-  WagerScreen,
   PlayingScreen,
   RoundResultScreen,
   PassDeviceScreen,
@@ -46,18 +45,6 @@ function App() {
           />
         );
 
-      case 'wager':
-        return (
-          <WagerScreen
-            player={currentPlayer}
-            targetIngredient={state.targetIngredient!}
-            wager={state.currentWager}
-            onWagerChange={actions.setWager}
-            onConfirm={actions.confirmWager}
-            onBack={() => actions.selectIngredient(state.targetIngredient!)}
-          />
-        );
-
       case 'playing':
         return (
           <PlayingScreen
@@ -65,7 +52,6 @@ function App() {
             playerHand={state.playerHand}
             dealerHand={state.dealerHand}
             targetIngredient={state.targetIngredient!}
-            wager={state.currentWager}
             onHit={actions.hit}
             onStand={actions.stand}
           />
@@ -78,7 +64,6 @@ function App() {
             playerHand={state.playerHand}
             dealerHand={state.dealerHand}
             targetIngredient={state.targetIngredient!}
-            wager={state.currentWager}
             result={state.roundResult!}
             onContinue={actions.processResult}
           />

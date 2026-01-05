@@ -15,7 +15,6 @@ interface RoundResultScreenProps {
   playerHand: CardType[];
   dealerHand: CardType[];
   targetIngredient: IngredientType;
-  wager: number;
   result: RoundResult;
   onContinue: () => void;
 }
@@ -33,7 +32,6 @@ export function RoundResultScreen({
   playerHand,
   dealerHand,
   targetIngredient,
-  wager,
   result,
   onContinue,
 }: RoundResultScreenProps) {
@@ -73,7 +71,7 @@ export function RoundResultScreen({
       <div className="result-outcome">
         {result === 'blackjack' && (
           <p>
-            Won {ingredient.emoji} {ingredient.name} + 🪙 {wager} bonus!
+            Won {ingredient.emoji} {ingredient.name} + 🪙 1 bonus!
           </p>
         )}
         {result === 'win' && (
@@ -81,9 +79,9 @@ export function RoundResultScreen({
             Won {ingredient.emoji} {ingredient.name}!
           </p>
         )}
-        {result === 'lose' && <p>Lost 🪙 {wager} tokens</p>}
-        {result === 'bust' && <p>Lost 🪙 {wager} tokens</p>}
-        {result === 'push' && <p>Tokens returned</p>}
+        {result === 'lose' && <p>Lost 🪙 1 token</p>}
+        {result === 'bust' && <p>Lost 🪙 1 token</p>}
+        {result === 'push' && <p>No change - try again!</p>}
       </div>
 
       <p className="tokens-remaining">Tokens: 🪙 {player.tokens}</p>

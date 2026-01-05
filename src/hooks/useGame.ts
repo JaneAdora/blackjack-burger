@@ -72,12 +72,38 @@ export function useGame() {
     }));
   }, []);
 
-  // Ingredient selection
+  // Ingredient selection - go straight to dealing
   const selectIngredient = useCallback((ingredient: IngredientType) => {
+    // Deal initial cards immediately
+    let deck = shuffleDeck(createDeck());
+    const playerHand: Card[] = [];
+    const dealerHand: Card[] = [];
+
+    let result = dealCard(deck);
+    playerHand.push(result.card);
+    deck = result.deck;
+
+    result = dealCard(deck);
+    playerHand.push(result.card);
+    deck = result.deck;
+
+    result = dealCard(deck);
+    dealerHand.push(result.card);
+    deck = result.deck;
+
+    result = dealCard(deck, false);
+    dealerHand.push(result.card);
+    deck = result.deck;
+
     setState((s) => ({
       ...s,
       targetIngredient: ingredient,
-      screen: 'wager',
+      currentWager: 1, // Always 1 token
+      deck,
+      playerHand,
+      dealerHand,
+      screen: 'playing',
+      roundResult: null,
     }));
   }, []);
 
@@ -123,6 +149,36 @@ export function useGame() {
     }));
   }, []);
 
+  // Helper to apply round result to player
+  const applyResultToPlayer = (
+    player: Player,
+    result: RoundResult,
+    wager: number,
+    ingredient: IngredientType | null
+  ): Player => {
+    const updated = { ...player };
+    switch (result) {
+      case 'blackjack':
+        updated.tokens += wager;
+        if (ingredient && !updated.ingredients.includes(ingredient)) {
+          updated.ingredients = [...updated.ingredients, ingredient];
+        }
+        break;
+      case 'win':
+        if (ingredient && !updated.ingredients.includes(ingredient)) {
+          updated.ingredients = [...updated.ingredients, ingredient];
+        }
+        break;
+      case 'lose':
+      case 'bust':
+        updated.tokens -= wager;
+        break;
+      case 'push':
+        break;
+    }
+    return updated;
+  };
+
   // Game actions
   const hit = useCallback(() => {
     setState((s) => {
@@ -130,10 +186,20 @@ export function useGame() {
       const playerHand = [...s.playerHand, card];
 
       if (isBust(playerHand)) {
+        // Apply bust result immediately
+        const players = [...s.players];
+        players[s.currentPlayerIndex] = applyResultToPlayer(
+          players[s.currentPlayerIndex],
+          'bust',
+          s.currentWager,
+          s.targetIngredient
+        );
+
         return {
           ...s,
           deck,
           playerHand,
+          players,
           roundResult: 'bust',
           screen: 'round-result',
         };
@@ -180,57 +246,40 @@ export function useGame() {
         roundResult = 'push';
       }
 
+      // Apply result immediately
+      const players = [...s.players];
+      players[s.currentPlayerIndex] = applyResultToPlayer(
+        players[s.currentPlayerIndex],
+        roundResult,
+        s.currentWager,
+        s.targetIngredient
+      );
+
       return {
         ...s,
         deck,
         dealerHand,
+        players,
         roundResult,
         screen: 'round-result',
       };
     });
   }, []);
 
-  // Process round result
+  // Process round result (navigation only, results already applied)
   const processResult = useCallback(() => {
     setState((s) => {
-      const players = [...s.players];
-      const player = { ...players[s.currentPlayerIndex] };
-      const { roundResult, currentWager, targetIngredient } = s;
-
-      // Apply result to player
-      switch (roundResult) {
-        case 'blackjack':
-          player.tokens += currentWager; // Win double (kept original + won same amount)
-          if (targetIngredient && !player.ingredients.includes(targetIngredient)) {
-            player.ingredients = [...player.ingredients, targetIngredient];
-          }
-          break;
-        case 'win':
-          // Keep wager + ingredient
-          if (targetIngredient && !player.ingredients.includes(targetIngredient)) {
-            player.ingredients = [...player.ingredients, targetIngredient];
-          }
-          break;
-        case 'lose':
-        case 'bust':
-          player.tokens -= currentWager;
-          break;
-        case 'push':
-          // Keep tokens, no ingredient
-          break;
-      }
-
-      players[s.currentPlayerIndex] = player;
+      const player = s.players[s.currentPlayerIndex];
 
       // Check win/lose conditions
       if (player.ingredients.length === TOTAL_INGREDIENTS) {
-        return { ...s, players, screen: 'victory' };
+        return { ...s, screen: 'victory' };
       }
 
       if (player.tokens <= 0) {
         // In multiplayer, this player is out; in single player, game over
         if (s.mode === 'single') {
-          return { ...s, players, screen: 'game-over' };
+          return { ...s, screen: 'game-over' };
         }
         // For multiplayer, we could eliminate player or just skip - for now, game over for that player
       }
@@ -240,7 +289,6 @@ export function useGame() {
         const nextIndex = (s.currentPlayerIndex + 1) % s.players.length;
         return {
           ...s,
-          players,
           currentPlayerIndex: nextIndex,
           screen: 'pass-device',
           currentWager: 1,
@@ -252,7 +300,6 @@ export function useGame() {
 
       return {
         ...s,
-        players,
         screen: 'ingredient-select',
         currentWager: 1,
         targetIngredient: null,

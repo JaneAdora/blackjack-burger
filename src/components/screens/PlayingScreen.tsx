@@ -10,7 +10,6 @@ interface PlayingScreenProps {
   playerHand: CardType[];
   dealerHand: CardType[];
   targetIngredient: IngredientType;
-  wager: number;
   onHit: () => void;
   onStand: () => void;
 }
@@ -20,7 +19,6 @@ export function PlayingScreen({
   playerHand,
   dealerHand,
   targetIngredient,
-  wager,
   onHit,
   onStand,
 }: PlayingScreenProps) {
@@ -33,7 +31,7 @@ export function PlayingScreen({
       <div className="game-header">
         <span className="player-name">{player.name}</span>
         <span className="wager-info">
-          🪙 {wager} → {ingredient.emoji}
+          Playing for {ingredient.emoji}
         </span>
       </div>
 
