@@ -13,6 +13,9 @@
 /* Title Screen */
 .title-screen {
   background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+  justify-content: flex-start;
+  padding-top: 50px;
+  gap: 18px;
 }
 
 .title-logo {
@@ -334,8 +337,8 @@
 /* Playing Screen */
 .playing-screen {
   justify-content: flex-start;
-  padding-top: 16px;
-  gap: 12px;
+  padding-top: 14px;
+  gap: 10px;
 }
 
 .game-header {
@@ -356,20 +359,20 @@
 .hands-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   width: 100%;
   max-width: 360px;
 }
 
 .hand {
   background: var(--table-green);
-  padding: 12px;
+  padding: 11px;
   border: 3px solid var(--pixel-dark);
   border-radius: 8px;
 }
 
 .hand h3 {
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   font-size: 12px;
   color: var(--pixel-light);
 }
@@ -384,8 +387,8 @@
 .action-buttons {
   display: flex;
   gap: 16px;
-  margin-top: auto;
-  padding-bottom: 20px;
+  margin-top: 12px;
+  padding-bottom: 16px;
 }
 
 /* Round Result Screen */
